@@ -175,7 +175,22 @@ function clearPendingUpdateModal() {
     clearNativeRecoveryTimer();
 }
 
+async function isRpcEnabledForUpdateModal() {
+    try {
+        const stored = await browser.storage.local.get('rpcEnabled');
+        return stored.rpcEnabled !== false;
+    } catch {
+        // Fail open to avoid accidentally breaking update checks on storage errors.
+        return true;
+    }
+}
+
 async function ensureNativeMissingModal() {
+    if (!(await isRpcEnabledForUpdateModal())) {
+        clearPendingUpdateModal();
+        return;
+    }
+
     if (pendingUpdateModal && pendingUpdateModal.kind === 'native_missing') return;
 
     nativeHostReachable = false;
@@ -205,6 +220,11 @@ async function ensureNativeMissingModal() {
 }
 
 async function ensureNativeInvalidModal() {
+    if (!(await isRpcEnabledForUpdateModal())) {
+        clearPendingUpdateModal();
+        return;
+    }
+
     if (pendingUpdateModal && pendingUpdateModal.kind === 'native_invalid') return;
 
     // Host responded, but we couldn't read a valid version from it
@@ -719,6 +739,11 @@ async function sendRequestSyncWithRetries(tabId, expectedUrl, maxAttempts = 18, 
 }
 
 async function tryShowPendingUpdateModal(tabId, url) {
+    if (!(await isRpcEnabledForUpdateModal())) {
+        clearPendingUpdateModal();
+        return;
+    }
+
     if (!pendingUpdateModal) return;
     if (!tabId) return;
     const isNativeBlocking = pendingUpdateModal.kind === 'native_missing' || pendingUpdateModal.kind === 'native_invalid';
@@ -772,6 +797,12 @@ function scheduleTryShowUpdateModal(tabId, url) {
     updateModalRetryByTab.set(tabId, state);
 
     const attempt = async () => {
+        if (!(await isRpcEnabledForUpdateModal())) {
+            clearPendingUpdateModal();
+            updateModalRetryByTab.delete(tabId);
+            return;
+        }
+
         if (!pendingUpdateModal) return;
         if (updateModalTargetTabId && tabId !== updateModalTargetTabId) return;
 
@@ -811,6 +842,12 @@ function scheduleTryShowUpdateModal(tabId, url) {
 }
 
 async function checkForNativeAppUpdate() {
+    if (!(await isRpcEnabledForUpdateModal())) {
+        updateAvailableStatus = null;
+        clearPendingUpdateModal();
+        return;
+    }
+
     let localVersion = "";
     try {
         const resp = await requestNative("GET_VERSION");
@@ -1395,6 +1432,19 @@ browser.runtime.onInstalled.addListener(async (details) => {
 });
 
 browser.runtime.onStartup.addListener(() => {
+    checkForNativeAppUpdate();
+});
+
+browser.storage.onChanged.addListener((changes, areaName) => {
+    if (areaName !== 'local' || !changes || !changes.rpcEnabled) return;
+
+    const newValue = changes.rpcEnabled.newValue;
+    if (newValue === false) {
+        updateAvailableStatus = null;
+        clearPendingUpdateModal();
+        return;
+    }
+
     checkForNativeAppUpdate();
 });
 
