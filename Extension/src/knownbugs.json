@@ -12,6 +12,10 @@
     {
       "title": "Seeking/Minimizing/Maximizing Youtube Music",
       "description": "If you seek while the song is minimized, minimize or maximize it, it sometimes resets the time to 0 but after like 4 seconds it jumps back to the correct time."
+    },
+    {
+      "title": "Internet Connection Issues",
+      "description": "If you loose youre internet connection and reconnect, the time of the video/song might be wrong. This will be fixed on the next update i.e. next song, pausing, resuming or seeking."
     }
   ]
 }
