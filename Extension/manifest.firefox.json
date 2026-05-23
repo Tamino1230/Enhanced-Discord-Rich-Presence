@@ -6,15 +6,25 @@
     "48": "src/icons/icon.png",
     "96": "src/icons/icon.png"
   },
+    "browser_specific_settings": {
+    "gecko": {
+      "id": "enhanced_discord_rich_presence@enhncddrpc.org",
+      "data_collection_permissions": {
+        "required": ["none"],
+        "optional": []
+      }
+    }
+  },
   "permissions": ["tabs", "storage", "nativeMessaging"],
   "host_permissions": [
     "*://*.youtube.com/*",
     "*://music.youtube.com/*",
     "*://github.com/*",
-    "*://raw.githubusercontent.com/*"
+    "*://raw.githubusercontent.com/*",
+    "*://addons.mozilla.org/*"
   ],
   "background": {
-    "service_worker": "background.js"
+    "scripts": ["background.js"]
   },
   "action": {
     "default_popup": "popup.html",
