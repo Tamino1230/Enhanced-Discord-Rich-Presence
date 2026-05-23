@@ -1,0 +1,9 @@
+{
+  "name": "com.enhanced.rpc.bridge",
+  "description": "Enhanced Discord Rich Presence Bridge",
+  "path": "%placeholder%",
+  "type": "stdio",
+  "allowed_origins": [
+    "chrome-extension://kfplppjeldjbdlkdchemkfncjhkiagao/"
+  ]
+}

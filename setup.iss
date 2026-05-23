@@ -25,23 +25,25 @@ CloseApplications=yes
 [Files]
 Source: "App\dist\EnhancedRPC.exe"; DestDir: "{app}"; Flags: ignoreversion
 Source: "App\version.txt"; DestDir: "{app}"; Flags: ignoreversion
-Source: "App\app_manifest.json"; DestDir: "{app}"; Flags: ignoreversion; AfterInstall: UpdateManifestPath
+Source: "App\app_manifest.firefox.json"; DestDir: "{app}"; Flags: ignoreversion; AfterInstall: UpdateFirefoxManifestPath
+Source: "App\app_manifest.chrome.json"; DestDir: "{app}"; Flags: ignoreversion; AfterInstall: UpdateChromeManifestPath
 
 [Registry]
-Root: HKCU; Subkey: "Software\Mozilla\NativeMessagingHosts\com.enhanced.rpc.bridge"; ValueType: string; ValueName: ""; ValueData: "{app}\app_manifest.json"; Flags: uninsdeletekey
+Root: HKCU; Subkey: "Software\Mozilla\NativeMessagingHosts\com.enhanced.rpc.bridge"; ValueType: string; ValueName: ""; ValueData: "{app}\app_manifest.firefox.json"; Flags: uninsdeletekey
+Root: HKCU; Subkey: "Software\Google\Chrome\NativeMessagingHosts\com.enhanced.rpc.bridge"; ValueType: string; ValueName: ""; ValueData: "{app}\app_manifest.chrome.json"; Flags: uninsdeletekey
 
 [InstallDelete]
 Type: files; Name: "{app}\bridge.exe"
 
 [Code]
-procedure UpdateManifestPath();
+procedure ProcessManifestFile(FileName: String);
 var
   ManifestPath: String;
   ExePath: String;
   FileDataAnsi: AnsiString;
   FileDataUnicode: String; 
 begin
-  ManifestPath := ExpandConstant('{app}\app_manifest.json');
+  ManifestPath := ExpandConstant('{app}\' + FileName);
   ExePath := ExpandConstant('{app}\EnhancedRPC.exe');
   
   StringChangeEx(ExePath, '\', '\\', True);
@@ -55,4 +57,14 @@ begin
       SaveStringToFile(ManifestPath, AnsiString(FileDataUnicode), False);
     end;
   end;
+end;
+
+procedure UpdateFirefoxManifestPath();
+begin
+  ProcessManifestFile('app_manifest.firefox.json');
+end;
+
+procedure UpdateChromeManifestPath();
+begin
+  ProcessManifestFile('app_manifest.chrome.json');
 end;
