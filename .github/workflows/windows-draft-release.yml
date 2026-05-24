@@ -103,12 +103,7 @@ jobs:
             $version = "${{ github.ref_name }}" -replace "^v", ""
             $currentDate = Get-Date -Format "dd.MM.yyyy"
 
-            $changelogPath = Join-Path $env:GITHUB_WORKSPACE "changelog.txt"
-            if (Test-Path $changelogPath) {
-            $changelog = Get-Content $changelogPath -Raw
-            } else {
-            $changelog = "No changelog available."
-            }
+            $changelog = Get-Content changelog.txt -Raw
 
             echo "VERSION=$version" >> $env:GITHUB_ENV
             echo "RELEASE_DATE=$currentDate" >> $env:GITHUB_ENV
