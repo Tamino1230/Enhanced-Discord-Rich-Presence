@@ -9,6 +9,7 @@ env:
   VERSION: ''
   RELEASE_DATE: ''
   CHANGELOG: ''
+  RELEASE_NOTES: ''
 
 permissions:
   contents: write
@@ -113,12 +114,12 @@ jobs:
                 $changelog = "No changelog available."
             }
 
+            $releaseNotes = "$releaseHeader`n`n$changelog"
+
             "VERSION=$version" >> $env:GITHUB_ENV
             "RELEASE_DATE=$currentDate" >> $env:GITHUB_ENV
-            "RELEASE_HEADER=$releaseHeader" >> $env:GITHUB_ENV
-
-            "CHANGELOG<<EOF" >> $env:GITHUB_ENV
-            $changelog >> $env:GITHUB_ENV
+            "RELEASE_NOTES<<EOF" >> $env:GITHUB_ENV
+            $releaseNotes >> $env:GITHUB_ENV
             "EOF" >> $env:GITHUB_ENV
 
       - name: Create draft GitHub release
@@ -130,7 +131,7 @@ jobs:
 
           name: "EnhancedRPC - v${{ env.VERSION }} - ${{ env.RELEASE_DATE }}"
 
-          body: ${{ env.CHANGELOG }}
+          body: ${{ env.RELEASE_NOTES }}
 
           generate_release_notes: true
           append_body: true
