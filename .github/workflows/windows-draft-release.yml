@@ -103,14 +103,20 @@ jobs:
             $version = "${{ github.ref_name }}" -replace "^v", ""
             $currentDate = Get-Date -Format "dd.MM.yyyy"
 
-            $changelog = Get-Content changelog.txt -Raw
+            $changelogPath = Join-Path $env:GITHUB_WORKSPACE "changelog.txt"
 
-            echo "VERSION=$version" >> $env:GITHUB_ENV
-            echo "RELEASE_DATE=$currentDate" >> $env:GITHUB_ENV
+            if (Test-Path $changelogPath) {
+                $changelog = Get-Content $changelogPath -Raw
+            } else {
+                $changelog = "No changelog available."
+            }
 
-            echo "CHANGELOG<<EOF" >> $env:GITHUB_ENV
-            echo "$changelog" >> $env:GITHUB_ENV
-            echo "EOF" >> $env:GITHUB_ENV
+            "VERSION=$version" >> $env:GITHUB_ENV
+            "RELEASE_DATE=$currentDate" >> $env:GITHUB_ENV
+
+            "CHANGELOG<<EOF" >> $env:GITHUB_ENV
+            $changelog >> $env:GITHUB_ENV
+            "EOF" >> $env:GITHUB_ENV
 
       - name: Create draft GitHub release
         uses: softprops/action-gh-release@v2
