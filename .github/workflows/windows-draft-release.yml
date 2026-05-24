@@ -110,12 +110,12 @@ jobs:
 
           name: "EnhancedRPC - v${{ env.VERSION }} - ${{ env.RELEASE_DATE }}"
 
-          body_path: |
+          body: |
             # Release Notes
 
             This is a test release note
 
           generate_release_notes: true
           append_body: true
-          
+
           files: Releases/EnhancedRPC-*-windows-setup.exe
