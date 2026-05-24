@@ -92,11 +92,22 @@ jobs:
           path: setup.iss
 
 
+      - name: Get version and date
+        shell: pwsh
+        run: |
+          $version = "${{ github.ref_name }}" -replace "^v", ""
+          $currentDate = Get-Date -Format "dd.MM.yyyy"
+          
+          echo "VERSION=$version" >> $env:GITHUB_ENV
+          echo "RELEASE_DATE=$currentDate" >> $env:GITHUB_ENV
+
       - name: Create draft GitHub release
         uses: softprops/action-gh-release@v2
         with:
           draft: true
           target_commitish: new-release-workflow # need to change to main once I merge it
+          name: "EnhancedRPC - v${{ env.VERSION }} - ${{ env.RELEASE_DATE }}"
           tag_name: ${{ github.ref_name }}
+          body_path: changelog.txt
           generate_release_notes: true
           files: Releases/EnhancedRPC-*-windows-setup.exe
