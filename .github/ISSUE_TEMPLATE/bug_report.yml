@@ -32,6 +32,29 @@ body:
         - Something else
     validations:
       required: true
+  - type: dropdown
+    id: system
+    attributes:
+      label: Operating System
+      description: Which operating system are you using?
+      options:
+        - Windows
+        - Linux
+        - macOS
+        - Other
+  - type: dropdown
+    id: browser
+    attributes:
+      label: Browser
+      description: Which browser are you using?
+      options:
+        - Mozilla Firefox
+        - Google Chrome
+        - Microsoft Edge
+        - Opera / Opera GX
+        - Vivaldi
+        - Brave
+        - Other
   - type: textarea
     id: description
     attributes:
