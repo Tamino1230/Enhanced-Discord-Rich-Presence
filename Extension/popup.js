@@ -350,16 +350,18 @@ function render() {
                                                                 <line x1="12" y1="8" x2="12.01" y2="8"></line>
                                                             </svg>
                             </div>
-                                                        <div class="tooltip-container" style="transform: translateY(2px); margin-left: 4px; color: #9ca3af;">
-                                                            <svg class="activity-icon warning-icon--orange" data-label="PlayingDisabled" xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                                                <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
-                                                                <line x1="12" y1="16" x2="12" y2="12"></line>
-                                                                <line x1="12" y1="8" x2="12.01" y2="8"></line>
-                                                            </svg>
-                                                        </div>
+                            ${cfg.type === 'Playing' ? `
+                                <div class="tooltip-container" style="transform: translateY(2px); margin-left: 4px; color: #9ca3af;">
+                                    <svg class="activity-icon warning-icon--orange" data-label="PlayingInformation" xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+                                        <line x1="12" y1="16" x2="12" y2="12"></line>
+                                        <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                                    </svg>
+                                </div>
+                            ` : ''}
                         </label>
                         <select data-id="${id}" class="type-select">
-                                                        <option disabled ${cfg.type === 'Playing' ? 'selected' : ''}>Playing</option>
+                            <option ${cfg.type === 'Playing' ? 'selected' : ''}>Playing</option>
                             <option ${cfg.type === 'Listening' ? 'selected' : ''}>Listening</option>
                             <option ${cfg.type === 'Watching' ? 'selected' : ''}>Watching</option>
                             <option ${cfg.type === 'Competing' ? 'selected' : ''}>Competing</option>
@@ -900,7 +902,7 @@ function showTooltip(icon) {
     const isYoutubeMusic = state.expandedSection === 'youtubeMusic';
     const suppressDynamicTags = label === 'AuthorURLWarning'
         || label === 'ListeningLargeImageWarning'
-        || label === 'PlayingDisabled';
+        ;
 
     let tooltipContentHtml = '';
     if (label === 'Details') {
@@ -921,10 +923,10 @@ function showTooltip(icon) {
             <p class="tooltip-text">If you select Playing, it will be hidden if another application with a "Playing" status is also running.<br><br>The others will always show.</p>
             <div class="tooltip-divider"></div>
         `;
-    } else if (label === 'PlayingDisabled') {
+    } else if (label === 'PlayingInformation') {
         tooltipContentHtml += `
-            <div class="tooltip-header">Playing Disabled</div>
-            <p class="tooltip-text">Playing is currently disabled due to issues.</p>
+            <div class="tooltip-header">Playing Information</div>
+            <p class="tooltip-text">Discord can only have ONE playing activity at a time. It might not show if another app already uses it.</p>
             <div class="tooltip-divider"></div>
         `;
     } else if (label === 'AuthorURLWarning') {
@@ -1778,7 +1780,7 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 function mapStorageToState(storageConfig, uiConfig) {
-    const typeMap = { 0: 'Watching', 2: 'Listening', 3: 'Watching', 5: 'Competing' };
+    const typeMap = { 0: 'Playing', 2: 'Listening', 3: 'Watching', 5: 'Competing' };
 
     if (!storageConfig || !uiConfig) return;
 

@@ -123,13 +123,6 @@ function getServiceFromUrl(url) {
 
 function normalizeDisabledActivityTypes(settings) {
     if (!settings || typeof settings !== 'object') return settings;
-    const rawType = settings.type;
-    const numericType = (typeof rawType === 'number') ? rawType : Number(rawType);
-
-    // Playing (0) is currently disabled due to issues.
-    if (Number.isFinite(numericType) && numericType === 0) {
-        return { ...settings, type: 3 };
-    }
     return settings;
 }
 

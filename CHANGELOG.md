@@ -7,6 +7,7 @@
 - added `%author_url%` and `%author_avatar%` placeholders for YouTube Music!
 
 ### Changed
+- fixed `playing` state.
 - moved `Discord_IPC.md` to `docs/`.
 - swapped (previously hidden) `changelog.txt` into (public) `CHANGELOG.md`.
 - adjusted `.gitignore` to have some IDE things.
