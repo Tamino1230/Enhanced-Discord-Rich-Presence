@@ -35,12 +35,12 @@ Root: HKCU; Subkey: "Software\Google\Chrome\NativeMessagingHosts\com.enhanced.rp
 Type: files; Name: "{app}\bridge.exe"
 
 [Code]
-procedure PrepareToInstall(var NeedsRestart: Boolean): String;
+function PrepareToInstall(var NeedsRestart: Boolean): String;
 var
   SignalPath: String;
 begin
   MsgBox('PrepareToInstall called', mbInformation, MB_OK);
-  Result := '';
+  Result := ''; 
   SignalPath := ExpandConstant('{app}\terminate.signal');
 
   if ForceDirectories(ExpandConstant('{app}')) then
@@ -49,7 +49,7 @@ begin
     begin
       Sleep(2000);
     end;
-  end;
+  end; 
 end;
 
 procedure CurStepChanged(CurStep: TSetupStep);
