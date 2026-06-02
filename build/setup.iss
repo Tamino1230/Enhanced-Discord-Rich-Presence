@@ -39,15 +39,14 @@ function PrepareToInstall(var NeedsRestart: Boolean): String;
 var
   SignalPath: String;
 begin
-  MsgBox('PrepareToInstall called', mbInformation, MB_OK);
   Result := ''; 
   SignalPath := ExpandConstant('{app}\terminate.signal');
 
   if ForceDirectories(ExpandConstant('{app}')) then
   begin
-    if SaveStringToFile(SignalPath, 'QUIT', False) then
+    if SaveStringToFile(SignalPath, '', False) then
     begin
-      Sleep(2000);
+      Sleep(3000);
     end;
   end; 
 end;
