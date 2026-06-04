@@ -1,7 +1,6 @@
 const browserAPI = typeof browser !== "undefined" ? browser : chrome;
 
 const NATIVE_HOST = "com.enhanced.rpc.bridge";
-const CHROME_NATIVE_EXTENSION_ID = "jnlnkdmjkphemglpbgamnobklkhjpkco";
 let nativePort = null;
 let defaultSettings = null;
 
@@ -298,9 +297,10 @@ function canUseChromeNativeMessaging() {
         const manifest = browserAPI.runtime.getManifest();
         const isFirefoxBuild = !!(manifest && manifest.browser_specific_settings && manifest.browser_specific_settings.gecko && manifest.browser_specific_settings.gecko.id);
         if (isFirefoxBuild) return true;
-        return browserAPI.runtime.id === CHROME_NATIVE_EXTENSION_ID;
+        
+        return typeof browserAPI.runtime.connectNative === 'function';
     } catch {
-        return true;
+        return false;
     }
 }
 
