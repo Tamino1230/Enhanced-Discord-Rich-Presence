@@ -26,13 +26,14 @@ Source: "..\App\dist\EnhancedRPC.exe"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\App\version.txt"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\App\app_manifest.firefox.json"; DestDir: "{app}"; Flags: ignoreversion; AfterInstall: UpdateFirefoxManifestPath
 Source: "..\App\app_manifest.chrome.json"; DestDir: "{app}"; Flags: ignoreversion; AfterInstall: UpdateChromeManifestPath
+Source: "..\App\app_manifest.edge.json"; DestDir: "{app}"; Flags: ignoreversion; AfterInstall: UpdateEdgeManifestPath
 
 [Registry]
 Root: HKCU; Subkey: "Software\Mozilla\NativeMessagingHosts\com.enhanced.rpc.bridge"; ValueType: string; ValueName: ""; ValueData: "{app}\app_manifest.firefox.json"; Flags: uninsdeletekey
 Root: HKCU; Subkey: "Software\Google\Chrome\NativeMessagingHosts\com.enhanced.rpc.bridge"; ValueType: string; ValueName: ""; ValueData: "{app}\app_manifest.chrome.json"; Flags: uninsdeletekey
 
 Root: HKCU; Subkey: "Software\BraveSoftware\Brave-Browser\NativeMessagingHosts\com.enhanced.rpc.bridge"; ValueType: string; ValueName: ""; ValueData: "{app}\app_manifest.chrome.json"; Flags: uninsdeletekey
-Root: HKCU; Subkey: "Software\Microsoft\Edge\NativeMessagingHosts\com.enhanced.rpc.bridge"; ValueType: string; ValueName: ""; ValueData: "{app}\app_manifest.chrome.json"; Flags: uninsdeletekey
+Root: HKCU; Subkey: "Software\Microsoft\Edge\NativeMessagingHosts\com.enhanced.rpc.bridge"; ValueType: string; ValueName: ""; ValueData: "{app}\app_manifest.edge.json"; Flags: uninsdeletekey
 Root: HKCU; Subkey: "Software\Vivaldi\NativeMessagingHosts\com.enhanced.rpc.bridge"; ValueType: string; ValueName: ""; ValueData: "{app}\app_manifest.chrome.json"; Flags: uninsdeletekey
 Root: HKCU; Subkey: "Software\Opera Software\NativeMessagingHosts\com.enhanced.rpc.bridge"; ValueType: string; ValueName: ""; ValueData: "{app}\app_manifest.chrome.json"; Flags: uninsdeletekey
 Root: HKCU; Subkey: "Software\Opera Software\Opera GX\NativeMessagingHosts\com.enhanced.rpc.bridge"; ValueType: string; ValueName: ""; ValueData: "{app}\app_manifest.chrome.json"; Flags: uninsdeletekey
@@ -98,4 +99,9 @@ end;
 procedure UpdateChromeManifestPath();
 begin
   ProcessManifestFile('app_manifest.chrome.json');
+end;
+
+procedure UpdateEdgeManifestPath();
+begin
+  ProcessManifestFile('app_manifest.edge.json');
 end;
