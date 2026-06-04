@@ -22,11 +22,11 @@
 
   <!--<a href="https://addons.opera.com/">
     <img src="https://img.shields.io/badge/Opera_Add--ons-FF1B2D?logo=opera&logoColor=white" alt="Opera Add-ons">
-  </a>
+  </a>-->
 
-  <a href="https://microsoftedge.microsoft.com/addons">
+  <a href="https://microsoftedge.microsoft.com/addons/detail/kmmcecbdjmacdgampeegcdhebhokfofc">
     <img src="https://img.shields.io/badge/Edge_Add--ons-0078D7?logo=microsoftedge&logoColor=white" alt="Microsoft Edge Add-ons">
-  </a>--> •
+  </a> •
 
   <a href="https://chromewebstore.google.com/detail/jnlnkdmjkphemglpbgamnobklkhjpkco">
     <img src="https://img.shields.io/badge/Brave-FF4500?logo=brave&logoColor=white" alt="Brave">
@@ -54,7 +54,7 @@
 
 
 <p align="center">
-  <img src="https://img.shields.io/badge/Extension-v1.4.1-orange"/>
+  <img src="https://img.shields.io/badge/Extension-v1.4.4-orange"/>
   <img src="https://img.shields.io/badge/Native-v1.5.1-orange"/>
 </p>
 
@@ -149,8 +149,8 @@ Designed for quick access without descriptions.
 | :--- | :--- |
 | **Firefox** | [Firefox Add-ons Store](https://addons.mozilla.org/en-US/firefox/addon/enhanced-discord-rich-presence/) |
 | **Chrome / Brave / Vivaldi** | [Chrome Web Store](https://chromewebstore.google.com/detail/jnlnkdmjkphemglpbgamnobklkhjpkco) |
+| **Edge** | [Edge Add-ons Store](https://microsoftedge.microsoft.com/addons/detail/kmmcecbdjmacdgampeegcdhebhokfofc) |
 <!-- | **Opera / Opera GX** | [Opera Add-ons Store](https://addons.opera.com/) | -->
-<!-- | **Edge** | [Edge Add-ons Store](https://microsoftedge.microsoft.com/addons) | -->
    
 ### Step 3: Verify Installation
 
@@ -194,6 +194,5 @@ If you need to remove the native app and extension from your system, follow the 
 - **Feature Requests**: [GitHub Discussions](../../discussions)
 - **Firefox**: [Firefox Add-ons store](https://addons.mozilla.org/en-US/firefox/addon/enhanced-discord-rich-presence/)
 - **Chrome / Brave / Vivaldi**: [Chrome Web Store](https://chromewebstore.google.com/detail/jnlnkdmjkphemglpbgamnobklkhjpkco)
-<!-- - **Opera/GX**: [Opera Add-ons](https://addons.opera.com/)
-- **Edge**: [Edge Add-ons](https://microsoftedge.microsoft.com/addons) -->
-
+- **Edge**: [Edge Add-ons](https://microsoftedge.microsoft.com/addons/detail/kmmcecbdjmacdgampeegcdhebhokfofc)
+<!-- - **Opera/GX**: [Opera Add-ons](https://addons.opera.com/)-->
