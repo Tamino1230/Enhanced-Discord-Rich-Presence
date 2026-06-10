@@ -6,6 +6,10 @@
     "description": "The activity type \"Playing\" currently does NOT work. The selection of this Type is currently disabled on the newest version."
     },
     {
+      "ads": "Youtube Ads",
+      "description": "If a YouTube or YouTube Music ad is playing, it will show the time of the ad and might not re-fix itself after the ad is done."
+    },
+    {
       "title": "Youtube: Multiple Channels",
       "description": "If the playing Youtube Video has multiple channels, it will say \"Unknown Author\"."
     },
