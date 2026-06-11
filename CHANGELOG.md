@@ -5,6 +5,7 @@
 - When updating, the Installer now automatically closes the Native App.
 - If users try to manually start the .exe, it will notify them that they don't have to.
 - fixed an issue where it would show the incorrect remaining time of a YouTube Music song.
+- made YouTube and YouTube Music video detection a lot better and more reliable.
 
 
 ## Repository Changelog

@@ -1314,9 +1314,10 @@ browserAPI.runtime.onMessage.addListener(async (msg, sender) => {
 browserAPI.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
     if (changeInfo.url) {
         const url = changeInfo.url;
-        const isYouTube = url.includes("youtube.com") || url.includes("music.youtube.com");
+        const isYouTubeMusic = url.includes("music.youtube.com");
+        const isYouTube = url.includes("youtube.com") && !isYouTubeMusic;
 
-        if (!isYouTube) {
+        if (!isYouTube && !isYouTubeMusic) {
             (async () => {
                 const port = getNativePort();
                 if (!port) return;
@@ -1336,6 +1337,29 @@ browserAPI.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
                 port.postMessage({
                     action: "TAB_CLOSED",
                     tabId: tabId
+                });
+            })();
+        } else {
+            (async () => {
+                const port = getNativePort();
+                if (!port) return;
+
+                let selected = {};
+                try {
+                    const status = await requestNativeStatus(700);
+                    selected = (status && status.selected_tabs) || {};
+                } catch { }
+
+                const current_service = getServiceFromUrl(url);
+
+                Object.entries(selected).forEach(([service, selectedTabId]) => {
+                    if (String(selectedTabId) === String(tabId)) {
+                        if (current_service === "YoutubeMusic" && service === "Youtube") {
+                            port.postMessage({ action: "CLEAR_SERVICE", service });
+                        } else if (current_service === "Youtube" && service === "YoutubeMusic") {
+                            port.postMessage({ action: "CLEAR_SERVICE", service });
+                        }
+                    }
                 });
             })();
         }

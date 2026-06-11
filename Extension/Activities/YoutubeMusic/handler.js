@@ -11,6 +11,7 @@ let lastSentAuthorUrl = "";
 let lastSentPlaying = null;
 let lastSentTrackKey = "";
 let lastSentTime = 0;
+let lastMetadataCheck = 0;
 
 let lastBrowsingActivityKey = null;
 let lastBrowsingActivityText = null;
@@ -20,6 +21,9 @@ let browsingActivityCheckInterval = null;
 let cachedInformationPopups = null;
 let cachedRpcYoutubeMusic = null;
 let playingTabHealthCheckInFlight = false;
+
+let videoListenersAttached = false;
+let metadataCheckInFlight = false;
 
 async function refreshCachedSettings() {
 	try {
@@ -225,46 +229,57 @@ async function sendToBackground(action, isNewTrack = false) {
 }
 
 async function checkMetadataConsistency() {
-	const queueItem = getQueueItem();
-	if (!queueItem) return;
+	const now = Date.now();
+	if (metadataCheckInFlight) return;
+	if (now - lastMetadataCheck < 1000) return;
 
-	const informationPopups = cachedInformationPopups;
+	metadataCheckInFlight = true;
+	lastMetadataCheck = now;
 
-	const currentTitle = getCleanTitle();
-	const currentUrl = window.location.href;
-	const currentThumbnail = getThumbnailUrl();
-	const authorData = getAuthorData();
-    const currentTrackKey = getStableTrackKey();
-	const currentTime = getCurrentTime();
+	try {
+		const queueItem = getQueueItem();
+		if (!queueItem) return;
 
-	const titleChanged = currentTitle !== lastSentTitle;
-	const urlChanged = currentUrl !== lastSentUrl;
-	const thumbnailChanged = (currentThumbnail || "") !== (lastSentThumbnail || "");
-	const authorChanged = (authorData.name || "") !== (lastSentAuthor || "") || (authorData.url || "") !== (lastSentAuthorUrl || "");
-	const timeChanged = Math.abs(currentTime - lastSentTime) > 3;
+		const informationPopups = cachedInformationPopups;
 
-	
-	const currentlyPlaying = isMusicCurrentlyPlaying();
-	const playStateChanged = lastSentPlaying !== null && currentlyPlaying !== lastSentPlaying;
+		const currentTitle = getCleanTitle();
+		const currentUrl = window.location.href;
+		const currentThumbnail = getThumbnailUrl();
+		const authorData = getAuthorData();
+		const currentTrackKey = getStableTrackKey();
+		const currentTime = getCurrentTime();
 
-	
-	const isNewTrack = currentTrackKey !== lastSentTrackKey;
-	const hasSignificantChange = isNewTrack || playStateChanged || authorChanged || titleChanged || urlChanged || thumbnailChanged || (timeChanged && !isNewTrack);
-	const isDataValid = !!currentTitle;
-
-	if (hasSignificantChange && isDataValid) {
-		sendToBackground(currentlyPlaying ? "VIDEO_RESUMED" : "VIDEO_PAUSED", isNewTrack);
+		const titleChanged = currentTitle !== lastSentTitle;
+		const urlChanged = currentUrl !== lastSentUrl;
+		const thumbnailChanged = (currentThumbnail || "") !== (lastSentThumbnail || "");
+		const authorChanged = (authorData.name || "") !== (lastSentAuthor || "") || (authorData.url || "") !== (lastSentAuthorUrl || "");
+		const timeChanged = Math.abs(currentTime - lastSentTime) > 3;
 
 		
-		if (informationPopups && isNewTrack) {
-			browser.runtime.sendMessage({
-				action: "show_broadcast_global",
-				data: {
-					title: "Broadcasting Track to RPC",
-					text: currentTitle
-				}
-			});
+		const currentlyPlaying = isMusicCurrentlyPlaying();
+		const playStateChanged = lastSentPlaying !== null && currentlyPlaying !== lastSentPlaying;
+
+		
+		const isNewTrack = currentTrackKey !== lastSentTrackKey;
+		const hasSignificantChange = isNewTrack || playStateChanged || authorChanged || titleChanged || urlChanged || thumbnailChanged || (timeChanged && !isNewTrack);
+		const isDataValid = !!currentTitle;
+
+		if (hasSignificantChange && isDataValid) {
+			sendToBackground(currentlyPlaying ? "VIDEO_RESUMED" : "VIDEO_PAUSED", isNewTrack);
+
+			
+			if (informationPopups && isNewTrack) {
+				browser.runtime.sendMessage({
+					action: "show_broadcast_global",
+					data: {
+						title: "Broadcasting Track to RPC",
+						text: currentTitle
+					}
+				});
+			}
 		}
+	} finally {
+		metadataCheckInFlight = false;
 	}
 }
 
@@ -303,8 +318,11 @@ function setupTitleObserver() {
 }
 
 function setupVideoEventListeners() {
+	if (videoListenersAttached) return;
 	const video = document.querySelector('video');
 	if (!video) return;
+
+	videoListenersAttached = true;
 
 	const metadataEvents = [
 		'ended',
@@ -370,6 +388,8 @@ function setupVideoEventListeners() {
 }
 
 async function handleNavigation() {
+	videoListenersAttached = false;
+
 	lastSentTitle = "";
 	lastSentUrl = "";
 	lastSentThumbnail = "";
@@ -384,7 +404,6 @@ async function handleNavigation() {
 	setupTitleObserver();
 	setupVideoEventListeners();
 	checkBrowsingActivity();
-
 	
 	let attempts = 0;
 	const checkMetadata = setInterval(async () => {
@@ -415,9 +434,12 @@ document.addEventListener("visibilitychange", () => {
 
 // Check for track activity every 2 seconds
 setInterval(() => {
-	if (getQueueItem()) {
-		checkMetadataConsistency();
-		// Periodically ensure video listeners are attached
+	if (!getQueueItem()) return;
+
+	checkMetadataConsistency();
+
+	const video = document.querySelector('video');
+	if (video && !videoListenersAttached) {
 		setupVideoEventListeners();
 	}
 }, 2000);
@@ -434,16 +456,6 @@ browsingActivityCheckInterval = setInterval(() => {
 	checkBrowsingActivity();
 }, 1000);
 
-window.addEventListener('beforeunload', () => {
-    try {
-        browser.runtime.sendMessage({
-            action: "CLEAR_RPC",
-            reason: "page_navigation",
-            currentSite: "YoutubeMusic"
-        });
-    } catch (e) {
-    }
-});
 
 browser.runtime.onMessage.addListener(async (message) => {
 	if (message.action === "REQUEST_SYNC") {
